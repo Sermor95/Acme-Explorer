@@ -1,7 +1,9 @@
 
 package controllers;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -49,13 +51,16 @@ public class ZoletController extends AbstractController {
 	public ModelAndView list(@RequestParam final int varId) {
 		final ModelAndView result;
 		Collection<Zolet> zolets;
+		final Collection<Zolet> futureZolets = new ArrayList<>();
 		Trip c;
 		c = this.tripService.findOne(varId);
 		zolets = c.getZolets();
-
+		for (final Zolet z : zolets)
+			if (z.getMoment() == null || new Date(System.currentTimeMillis()).before(z.getMoment()))
+				futureZolets.add(z);
 		result = new ModelAndView("zolet/list");
 		result.addObject("trip", c);
-		result.addObject("zolets", zolets);
+		result.addObject("zolets", futureZolets);
 		result.addObject("requestURI", "zolet/list.do");
 
 		return result;

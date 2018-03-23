@@ -13,6 +13,7 @@ import javax.persistence.TemporalType;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -49,7 +50,7 @@ public class Zolet extends DomainEntity {
 		return this.title;
 	}
 
-	@NotBlank
+	@Length(min = 0, max = 250)
 	public String getDescription() {
 		return this.description;
 	}

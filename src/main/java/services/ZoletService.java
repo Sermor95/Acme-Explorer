@@ -32,6 +32,9 @@ public class ZoletService {
 	private ActorService	actorService;
 
 
+	//@Autowired
+	//private TripService		tripService;
+
 	//Simple CRUD methods --------------------------------
 
 	public Zolet create() {
@@ -56,12 +59,14 @@ public class ZoletService {
 	public Zolet save(final Zolet zolet) {
 		Assert.notNull(zolet);
 
-		Assert.isTrue(zolet.getMoment() == null);
+		Assert.isTrue(zolet.getMoment() == null || zolet.getMoment().after(new Date(System.currentTimeMillis())));
 
 		Assert.isTrue(zolet.getGauge() >= 1 && zolet.getGauge() <= 3);
 		//Assertion that the user modifying this audit has the correct privilege.
 		Assert.isTrue(this.actorService.findByPrincipal().getId() == zolet.getManager().getId());
 		Assert.notNull(zolet.getTrip());
+		//final Trip t = this.tripService.findOne(zolet.getTrip().getId());
+		//t.getZolets().add(zolet);
 		return this.zoletRepository.save(zolet);
 	}
 

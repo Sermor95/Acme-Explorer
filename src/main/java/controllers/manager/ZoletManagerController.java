@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import services.ActorService;
-import services.TripService;
 import services.ZoletService;
 import controllers.AbstractController;
 import domain.Manager;
@@ -33,9 +32,6 @@ public class ZoletManagerController extends AbstractController {
 
 	@Autowired
 	private ActorService	actorService;
-
-	@Autowired
-	private TripService		tripService;
 
 
 	//Listing
@@ -61,7 +57,7 @@ public class ZoletManagerController extends AbstractController {
 		final ModelAndView result;
 		Zolet zolet;
 		Collection<Trip> trips;
-		trips = this.tripService.findAll();
+		trips = ((Manager) this.actorService.findByPrincipal()).getTrip();
 		zolet = this.zoletService.create();
 		result = this.createEditModelAndView(zolet);
 		result.addObject("trips", trips);
@@ -78,7 +74,7 @@ public class ZoletManagerController extends AbstractController {
 		zolet = this.zoletService.findOne(varId);
 		Assert.notNull(zolet);
 		Collection<Trip> trips;
-		trips = this.tripService.findAll();
+		trips = ((Manager) this.actorService.findByPrincipal()).getTrip();
 		result = this.createEditModelAndView(zolet);
 		result.addObject("trips", trips);
 		return result;
@@ -87,13 +83,12 @@ public class ZoletManagerController extends AbstractController {
 	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "save")
 	public ModelAndView save(@Valid final Zolet zolet, final BindingResult binding) {
 		ModelAndView result;
-		Collection<Trip> trips;
-		trips = this.tripService.findAll();
+		//Collection<Trip> trips;
+		//trips = ((Manager) this.actorService.findByPrincipal()).getTrip();
 
 		if (binding.hasErrors()) {
 			System.out.println(binding.getAllErrors());
 			result = this.createEditModelAndView(zolet);
-
 		} else
 			try {
 				this.zoletService.save(zolet);
@@ -101,7 +96,7 @@ public class ZoletManagerController extends AbstractController {
 			} catch (final Throwable oops) {
 				result = this.createEditModelAndView(zolet, "zolet.commit.error");
 			}
-		result.addObject("trips", trips);
+		//result.addObject("trips", trips);
 		return result;
 	}
 
@@ -137,9 +132,11 @@ public class ZoletManagerController extends AbstractController {
 
 	protected ModelAndView createEditModelAndView(final Zolet zolet, final String messageCode) {
 		ModelAndView result;
-
+		Collection<Trip> trips;
+		trips = ((Manager) this.actorService.findByPrincipal()).getTrip();
 		result = new ModelAndView("zolet/edit");
 		result.addObject("zolet", zolet);
+		result.addObject("trips", trips);
 		result.addObject("message", messageCode);
 		result.addObject("requestURI", "zolet/manager/edit.do");
 

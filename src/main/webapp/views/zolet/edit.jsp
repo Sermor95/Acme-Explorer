@@ -67,7 +67,7 @@
 
 		<form:label path="moment">
 			<jstl:out value="${moment}" />:</form:label>
-		<form:textarea path="moment" />
+		<form:textarea path="moment" placeholder="dd/MM/yy HH:mm"/>
 		<form:errors cssClass="error" path="moment" />
 		<br />
 		<br />
